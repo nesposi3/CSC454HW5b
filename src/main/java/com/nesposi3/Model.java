@@ -4,7 +4,10 @@ import java.util.List;
 
 public abstract class Model<Input, Output> {
     public abstract Output lambda();
-    public abstract void delta(Input input);
+    public abstract void deltaExt(Input input);
+    public abstract void deltaInt();
+    public abstract void deltaConf(Input input);
+    public abstract double timeAdvance();
     public Port<Output> getOutputPort(){
         return this.outputPort;
     }

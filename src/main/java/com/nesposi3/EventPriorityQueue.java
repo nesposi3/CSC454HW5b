@@ -2,46 +2,63 @@ package com.nesposi3;
 
 public class EventPriorityQueue {
     private Event[] events;
+    private int count = 0;
     public EventPriorityQueue(){
         this.events = new Event[0];
     }
-    public void enqueue(Event event){
-        Event[] newEvents = new Event[this.events.length+1];
-        if(this.events.length==0){
-            // First element added manually
-            newEvents[0] = event;
-            this.events = newEvents;
-        }else{
-            for (int i = 0; i <this.events.length; i++) {
-                Event queueEvent = this.events[i];
-                if(event.compareTo(queueEvent) > 0){
-                    // If event is older than one on queue, put it in its place, bump everyone else up
-                    newEvents[i] = event;
-                    System.arraycopy(this.events, i, newEvents, i + 1, newEvents.length - (i + 1));
-                    this.events = newEvents;
-                    break;
-                }else{
-                    // If an event is newer or equal, just add old events
-                    newEvents[i] = this.events[i];
-                }
-            }
+    public void add(Event e){
+        int k = count++;
+        // array not big enough, resize
+        if(count > events.length){
+            Event[] newArr = new Event[count];
+            System.arraycopy(events, 0, newArr, 0, events.length);
+            this.events = newArr;
         }
-
+        events[k] = e;
+        siftUp(k);
     }
-    public Event dequeue(){
-        if(this.events.length==0){
-            //Queue empty
+    public Event take(){
+        if(count==0){
             return null;
         }
-        Event eventOut = this.events[this.events.length-1];
-        Event[] newEvents = new Event[this.events.length-1];
-        // Copy all but the last event into new array
-        for (int i = 0; i <newEvents.length ; i++) {
-            newEvents[i] = this.events[i];
-        }
-        this.events = newEvents;
-        return eventOut;
+        Event out = events[0];
+        events[0] = events[--count];
+        siftDown(0);
+        return out;
     }
+    private void siftDown(int k){
+        while(k<count){
+            int l = left(k);
+            int r = right(k);
+            int c;
+            if(r>=count || events[l].compareTo(events[r])<0){
+                c=l;
+            }else c =r;
+            if(events[k].compareTo(events[c])<0){
+                k = c;
+            }else break;
+        }
+    }
+    private void siftUp(int k){
+        while(k!=0){
+            int p = parent(k);
+            if(events[k].compareTo(events[p])<0){
+                Event e = events[k];
+                events[k] = events[p];
+                events[p] = e;
+            }else break;
+        }
+    }
+    private int parent(int k){
+        return (k-1) >>>1;
+    }
+    private int left(int k){
+        return (k << 1) + 1;
+    }
+    private int right(int k){
+        return (k << 1) + 2;
+    }
+
 
     @Override
     public String toString() {
