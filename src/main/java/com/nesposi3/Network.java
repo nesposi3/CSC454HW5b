@@ -47,7 +47,7 @@ public class Network<Input,Output>{
                 // Preform deltaInternal on model, create a new deltaExternal for
                 Model<?,?> model = e.getModel();
                 //If model is our output model, print its output
-                if(model.equals(this.finalChild)){
+                if((model.equals(this.finalChild)) || debug){
                     System.out.println(model.lambda());
                 }
                 model.deltaInt();
