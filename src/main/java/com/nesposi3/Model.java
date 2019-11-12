@@ -29,6 +29,11 @@ public abstract class Model<Input, Output> {
     protected List<Port<Input>> inputPorts;
     protected Port<Output> outputPort;
     protected List<Pipe<Output>> pipeList;
-    protected TimePair timeSinceLastDelta;
+    protected TimePair timeOfLastDeltaExt;
+
+    public void setTimeOfLastDeltaExt(TimePair timeOfLastDeltaExt) {
+        this.timeOfLastDeltaExt = timeOfLastDeltaExt;
+    }
+
     public String name;
 }

@@ -42,6 +42,7 @@ public class Network<Input,Output>{
                 } else{
                     //Not confluent, do deltaExt, remove previous internal, add new internal
                     e.getModel().deltaExt(e.getInput());
+                    e.getModel().setTimeOfLastDeltaExt(e.getTimePair());
                 }
             }else if(e.getEventType()==EventType.DELTAINT){
                 // Preform deltaInternal on model, create a new deltaExternal for
