@@ -4,10 +4,11 @@ import java.util.List;
 
 public abstract class Model<Input, Output> {
     public abstract Output lambda();
-    public abstract void deltaExt(List<Input> input);
+    public abstract void deltaExt(Input input);
     public abstract void deltaInt();
     public abstract void deltaConf(Input input);
     public abstract double timeAdvance();
+    public abstract boolean recievedAllInput();
     public Port<Output> getOutputPort(){
         return this.outputPort;
     }
@@ -28,5 +29,6 @@ public abstract class Model<Input, Output> {
     protected List<Port<Input>> inputPorts;
     protected Port<Output> outputPort;
     protected List<Pipe<Output>> pipeList;
+    protected TimePair timeSinceLastDelta;
     public String name;
 }

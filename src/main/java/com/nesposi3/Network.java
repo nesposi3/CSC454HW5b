@@ -31,50 +31,37 @@ public class Network<Input,Output>{
         System.out.println(eventPriorityQueue.toString());
     }
     public void simulate(){
-
-    }
-    public Output lambda() {
-        Output firstOutput = this.firstChild.lambda();
-        this.firstChild.getOutputPort().setVal(firstOutput);
-        for (Pipe<Output> p :this.firstChild.getPipes()
-             ) {
-            p.shiftVal(firstOutput);
-        }
-
-
-        for (Model<Input,Output> m: this.childList
-             ) {
-            Output output = m.lambda();
-            m.getOutputPort().setVal(output);
-            for(Pipe<Output> p: m.getPipes()){
-                p.shiftVal(output);
+        while(!eventPriorityQueue.isEmpty()){
+            Event<?> e = eventPriorityQueue.take();
+            globalTime= e.getTimePair();
+            if(e.getEventType()==EventType.DELTAEXT){
+                //Check if confluent
+                Event next = eventPriorityQueue.peek();
+                if(e.isConfluent(next)){
+                    //Confluent case
+                } else{
+                    //Not confluent, do deltaExt, remove previous internal, add new internal
+                    e.getModel().deltaExt(e.getInput());
+                }
+            }else if(e.getEventType()==EventType.DELTAINT){
+                // Preform deltaInternal on model, create a new deltaExternal for
+                Model<?,?> model = e.getModel();
+                //If model is our output model, print its output
+                if(model.equals(this.finalChild)){
+                    System.out.println(model.lambda());
+                }
+                model.deltaInt();
+                Model<?,?> next = model.getOutputPort().getConnectedTo();
+                Port a = model.getOutputPort();
+                a.setVal(model.lambda());
+                TimePair nextExternalTime = (e.getTimePair().advanceBy(0));
+                // Model side check if all input ports have been set, if yes, new deltaExternal
+                if(next.recievedAllInput()){
+                    Event newExternal = new Event(next,nextExternalTime,EventType.DELTAEXT,model.lambda());
+                    eventPriorityQueue.add(newExternal);
+                }
             }
         }
-        Output finalOutput = this.finalChild.lambda();
-        for (Pipe<Output> p :this.finalChild.getPipes()) {
-            p.shiftVal(finalOutput);
-
-        }
-        return finalOutput;
-    }
-
-    public void deltaExt(List<Input> input) {
-        this.firstChild.deltaExt(input);
-        for (Model<Input,Output> m:this.childList) {
-            List<Port<Input>> inputPorts = m.getInputPorts();
-            ArrayList<Input> deltaInputs = new ArrayList<>();
-            for (Port<Input> p:inputPorts) {
-                deltaInputs.add(p.getVal());
-            }
-            m.deltaExt(deltaInputs);
-        }
-
-        List<Port<Input>> inputPorts = finalChild.getInputPorts();
-        ArrayList<Input> deltaInputs = new ArrayList<>();
-        for (Port<Input> p:inputPorts) {
-            deltaInputs.add(p.getVal());
-        }
-        finalChild.deltaExt(deltaInputs);
 
     }
 

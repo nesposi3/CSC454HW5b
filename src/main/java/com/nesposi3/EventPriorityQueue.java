@@ -71,4 +71,12 @@ public class EventPriorityQueue {
         builder.append("]");
         return builder.toString();
     }
+
+    public boolean isEmpty() {
+        return events.length==0;
+    }
+
+    public Event peek() {
+        return events[0];
+    }
 }
