@@ -29,6 +29,10 @@ public class MachineModel extends Model<Pair<Integer,Double>,Integer> {
             this.numParts += q;
             this.timeLeft = t;
         }
+        // Clear ports for next external
+        for (Port<Pair<Integer,Double>> p: inputPorts) {
+            p.setVal(defaultPortVal);
+        }
     }
 
     @Override
