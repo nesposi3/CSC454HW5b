@@ -2,13 +2,15 @@ package com.nesposi3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class Network<Input,Output> extends Model<Input,Output> {
+public class Network<Input,Output>{
     public TimePair globalTime;
     public EventPriorityQueue eventPriorityQueue;
-    private Model<Input,Output> firstChild;
-    private Model<Input, Output> finalChild;
-    private List<Model<Input,Output>> childList;
+    private Model<Input,?> firstChild;
+    private Model<?, Output> finalChild;
+    private List<Model<?,?>> childList;
+    private boolean debug;
     public Network(boolean debugFlag){
         this.childList = new ArrayList<>();
         this.debug = debugFlag;
@@ -16,13 +18,21 @@ public class Network<Input,Output> extends Model<Input,Output> {
         this.eventPriorityQueue = new EventPriorityQueue();
     }
 
-    public void addModel(Model<Input,Output> m){
+    public void addModel(Model<?,?> m){
         this.childList.add(m);
+    }
+    public void initializeQueue(Map<String,Input> inputs){
+        for(String s:inputs.keySet()){
+            double time = Double.parseDouble(s);
+            Input num = inputs.get(s);
+            Event<Input> e = new Event<>(this.firstChild,new TimePair(time),EventType.DELTAEXT,num);
+            eventPriorityQueue.add(e);
+        }
+        System.out.println(eventPriorityQueue.toString());
     }
     public void simulate(){
 
     }
-    @Override
     public Output lambda() {
         Output firstOutput = this.firstChild.lambda();
         this.firstChild.getOutputPort().setVal(firstOutput);
@@ -48,8 +58,7 @@ public class Network<Input,Output> extends Model<Input,Output> {
         return finalOutput;
     }
 
-    @Override
-    public void deltaExt(Input input) {
+    public void deltaExt(List<Input> input) {
         this.firstChild.deltaExt(input);
         for (Model<Input,Output> m:this.childList) {
             List<Port<Input>> inputPorts = m.getInputPorts();
@@ -69,26 +78,11 @@ public class Network<Input,Output> extends Model<Input,Output> {
 
     }
 
-    @Override
-    public void deltaInt() {
-
-    }
-
-    @Override
-    public void deltaConf(Input input) {
-
-    }
-
-    @Override
-    public double timeAdvance() {
-        return Integer.MAX_VALUE;
-    }
-
     /**
      * Tell the network which child to give its input to
      * @param m
      */
-    public void setFirstChild(Model<Input,Output> m){
+    public void setFirstChild(Model<Input,?> m){
         this.firstChild = m;
     }
 
@@ -96,7 +90,7 @@ public class Network<Input,Output> extends Model<Input,Output> {
      * Tell the network which child o get its output from
      * @param m
      */
-    public void setFinalChild(Model<Input,Output> m){
+    public void setFinalChild(Model<?,Output> m){
         this.finalChild = m;
     }
 

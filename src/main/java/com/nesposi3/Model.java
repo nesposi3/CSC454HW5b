@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class Model<Input, Output> {
     public abstract Output lambda();
-    public abstract void deltaExt(Input input);
+    public abstract void deltaExt(List<Input> input);
     public abstract void deltaInt();
     public abstract void deltaConf(Input input);
     public abstract double timeAdvance();

@@ -10,6 +10,9 @@ public class MachineModel extends Model<Pair<Integer,Double>,Integer> {
         return 1;
     }
 
+    public MachineModel(int timeTocomplete){
+        this.t = timeTocomplete;
+    }
     @Override
     public void deltaExt(Pair<Integer,Double> pair) {
         int q = pair.getA();

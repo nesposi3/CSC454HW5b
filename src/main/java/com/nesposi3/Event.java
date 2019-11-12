@@ -1,14 +1,16 @@
 package com.nesposi3;
 
-public class Event implements Comparable<Event> {
+public class Event<Input> implements Comparable<Event> {
     private Model model;
     private TimePair timePair;
     private EventType eventType;
+    private Input input;
 
-    public Event(Model m, TimePair t, EventType e){
+    public Event(Model m, TimePair t, EventType e,Input input){
         this.model = m;
         this.timePair = t;
         this.eventType = e;
+        this.input = input;
     }
 
     public TimePair getTimePair() {

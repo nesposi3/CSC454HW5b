@@ -1,25 +1,28 @@
 package com.nesposi3;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args){
-        TimePair a = new TimePair(.6);
-        TimePair b = new TimePair(2.3);
-        TimePair c = new TimePair(.4);
-        MachineModel p = new MachineModel();
-        MachineModel l = new MachineModel();
-        MachineModel m = new MachineModel();
-        MachineModel n = new MachineModel();
-
-        Event eA = new Event(p,a,EventType.DELTAEXT);
-        Event eB = new Event(l,b,EventType.DELTAEXT);
-        Event eC = new Event(m,c,EventType.DELTAEXT);
-        Event eD = new Event(n,a,EventType.DELTAEXT);
-        EventPriorityQueue queue = new EventPriorityQueue();
-        queue.add(eA);
-        queue.add(eB);
-        queue.add(eC);
-        queue.add(eD);
-        System.out.println(queue.toString());
+        File f = new File("traj.txt");
+        try {
+            Scanner sc = new Scanner(f);
+            HashMap<String,String> map= new HashMap<>();
+            while (sc.hasNext()){
+                String line = sc.nextLine();
+                String time = line.split(",")[0];
+                String num = line.split(",")[1];
+                map.put(time,num);
+            }
+            Network<String,String> network = new Network<>(false);
+            network.initializeQueue(map);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 }
