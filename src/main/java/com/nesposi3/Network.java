@@ -53,6 +53,7 @@ public class Network<Input,Output>{
                 }
                 model.deltaInt();
                 TimePair nextExternalTime = (e.getTimePair().advanceBy(0));
+                // Go through all the pipes of a model, and check to see if deltaExternal events need to be made
                 for (Pipe pipe:model.getPipes()){
                     pipe.shiftVal(model.lambda());
                     Model next = pipe.getNextModel();
