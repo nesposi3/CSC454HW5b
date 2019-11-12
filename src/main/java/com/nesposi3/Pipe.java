@@ -11,6 +11,9 @@ public class Pipe<T>{
         previousOut.setVal(newOut);
         nextIn.setVal(previousOut.getVal());
     }
+    public Model<T,?> getNextModel(){
+        return nextIn.getConnectedTo();
+    }
 
 
 }

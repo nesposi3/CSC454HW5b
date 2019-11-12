@@ -52,15 +52,17 @@ public class Network<Input,Output>{
                     System.out.println(model.lambda());
                 }
                 model.deltaInt();
-                Model<?,?> next = model.getOutputPort().getConnectedTo();
-                Port a = model.getOutputPort();
-                a.setVal(model.lambda());
                 TimePair nextExternalTime = (e.getTimePair().advanceBy(0));
-                // Model side check if all input ports have been set, if yes, new deltaExternal
-                if(next.recievedAllInput()){
-                    Event newExternal = new Event(next,nextExternalTime,EventType.DELTAEXT,model.lambda());
-                    eventPriorityQueue.add(newExternal);
+                for (Pipe pipe:model.getPipes()){
+                    pipe.shiftVal(model.lambda());
+                    Model next = pipe.getNextModel();
+                    // Model side check if all input ports have been set, if yes, new deltaExternal
+                    if(next.recievedAllInput()){
+                        Event newExternal = new Event(next,nextExternalTime,EventType.DELTAEXT,model.lambda());
+                        eventPriorityQueue.add(newExternal);
+                    }
                 }
+
             }
         }
 
