@@ -2,7 +2,7 @@ package com.nesposi3;
 
 import java.util.List;
 
-public abstract class Model<Input, Output> {
+public abstract class Model<Input, Output> implements Comparable<Model> {
     public abstract Output lambda();
     public abstract void deltaExt(Input input);
     public abstract void deltaInt();
@@ -32,9 +32,13 @@ public abstract class Model<Input, Output> {
     protected List<Pipe<Output>> pipeList;
     protected TimePair timeOfLastDeltaExt;
 
+    @Override
+    public int compareTo(Model o) {
+        return this.name.compareTo(o.name);
+    }
+
     public void setTimeOfLastDeltaExt(TimePair timeOfLastDeltaExt) {
         this.timeOfLastDeltaExt = timeOfLastDeltaExt;
     }
-
     public String name;
 }

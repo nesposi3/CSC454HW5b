@@ -31,7 +31,16 @@ public class Event<Input> implements Comparable<Event> {
 
     @Override
     public int compareTo(Event event) {
-        return this.timePair.compareTo(event.timePair);
+        if(this.timePair.compareTo(event.timePair)!=0){
+            return this.timePair.compareTo(event.timePair);
+        }
+        if(!(this.model.equals(event.model))){
+            return this.model.compareTo(event.model);
+        }
+        if(!(this.eventType==event.eventType)){
+            return this.eventType.compareTo(event.eventType);
+        }
+        return 0;
     }
 
     @Override
