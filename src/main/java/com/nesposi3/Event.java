@@ -2,6 +2,7 @@ package com.nesposi3;
 
 public class Event<Input> implements Comparable<Event> {
     private Model model;
+
     private TimePair timePair;
     private EventType eventType;
     private Input input;
@@ -11,6 +12,12 @@ public class Event<Input> implements Comparable<Event> {
         this.timePair = t;
         this.eventType = e;
         this.input = input;
+    }
+    public Event(Model m,TimePair t,EventType e){
+        this.model = m;
+        this.timePair = t;
+        this.eventType = e;
+        this.input = null;
     }
 
     public TimePair getTimePair() {
@@ -42,5 +49,9 @@ public class Event<Input> implements Comparable<Event> {
     public boolean isConfluent(Event other){
         return ((this.model== other.model) && (this.timePair.equals(other.timePair))
                 && (this.eventType==EventType.DELTAEXT) && (other.eventType== EventType.DELTAINT));
+    }
+
+    public void setTimePair(TimePair timePair) {
+        this.timePair = timePair;
     }
 }

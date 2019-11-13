@@ -1,22 +1,26 @@
 package com.nesposi3;
 
 
+import java.util.ArrayList;
 import java.util.Objects;
 
-public class MachineModel extends Model<Pair<Integer,Double>,Integer> {
+public class MachineModel extends Model<Pair<Integer,Double>,Pair<Integer,Double>> {
     private double timeLeft;
     private int numParts;
     private int t;
     private Pair<Integer,Double> defaultPortVal;
     @Override
-    public Integer lambda() {
-        return 1;
+    public Pair<Integer,Double> lambda() {
+        //TODO Get the correct time elapsed for output
+        return new Pair<>(1,0.0);
     }
 
     public MachineModel(int timeTocomplete, String name,Pair<Integer,Double> defaultPortVal){
         this.t = timeTocomplete;
         this.name = name;
         this.defaultPortVal = defaultPortVal;
+        this.inputPorts = new ArrayList<>();
+        this.pipeList = new ArrayList<>();
     }
     @Override
     public void deltaExt(Pair<Integer,Double> pair) {
@@ -48,7 +52,7 @@ public class MachineModel extends Model<Pair<Integer,Double>,Integer> {
     @Override
     public double timeAdvance() {
         if(numParts>0) return timeLeft;
-        return Double.MAX_VALUE;
+        return Network.INFINITY;
     }
 
     @Override

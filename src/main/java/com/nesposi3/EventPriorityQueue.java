@@ -24,6 +24,9 @@ public class EventPriorityQueue {
         Event out = events[0];
         events[0] = events[--count];
         siftDown(0);
+        Event[] newEvevnts = new Event[count];
+        System.arraycopy(events, 0, newEvevnts, 0, newEvevnts.length);
+        this.events = newEvevnts;
         return out;
     }
     private void siftDown(int k){
@@ -34,6 +37,7 @@ public class EventPriorityQueue {
             if(r>=count || events[l].compareTo(events[r])<0){
                 c=l;
             }else c =r;
+            if(c>=count) break;
             if(events[k].compareTo(events[c])<0){
                 k = c;
             }else break;
@@ -78,5 +82,23 @@ public class EventPriorityQueue {
 
     public Event peek() {
         return events[0];
+    }
+
+    /**
+     * Method that reweights an internal event to a new time
+     * @param model the model who needs a new internal event
+     * @param newTime the new time of the internal event
+     * @return Returns false if no such internal event exists, Returns true if it does exist and was reweighted
+     */
+    public boolean reweightInternal(Model model,TimePair newTime) {
+        for (int i =0;i<events.length ;i++) {
+            Event e = events[i];
+            if(e.getEventType()==EventType.DELTAINT && e.getModel().equals(model)){
+                e.setTimePair(newTime);
+                siftDown(i);
+                return true;
+            }
+        }
+        return false;
     }
 }

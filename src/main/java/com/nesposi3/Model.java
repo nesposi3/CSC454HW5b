@@ -21,7 +21,8 @@ public abstract class Model<Input, Output> {
     public void addPort(Port<Input> p ){
         this.inputPorts.add(p);
     }
-    public void addPipe(Port<Output> nextIn ){
+    public void addPipe(Port<Output> nextIn,Output defVal ){
+        this.outputPort = new Port<>(defVal,nextIn.getConnectedTo());
         Pipe<Output> p = new Pipe<>(this.outputPort,nextIn);
         this.pipeList.add(p);
     }

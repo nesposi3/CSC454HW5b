@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Network<Input,Output>{
+    public static final Double INFINITY = Double.MAX_VALUE;
     public TimePair globalTime;
     public EventPriorityQueue eventPriorityQueue;
     private Model<Input,?> firstChild;
@@ -28,28 +29,48 @@ public class Network<Input,Output>{
             Event<Input> e = new Event<>(this.firstChild,new TimePair(time),EventType.DELTAEXT,num);
             eventPriorityQueue.add(e);
         }
-        System.out.println(eventPriorityQueue.toString());
     }
     public void simulate(){
         while(!eventPriorityQueue.isEmpty()){
             Event<?> e = eventPriorityQueue.take();
+            if(debug){
+                System.out.println(e);
+            }
             globalTime= e.getTimePair();
             if(e.getEventType()==EventType.DELTAEXT){
                 //Check if confluent
-                Event next = eventPriorityQueue.peek();
-                if(e.isConfluent(next)){
-                    //Confluent case
-                } else{
-                    //Not confluent, do deltaExt, remove previous internal, add new internal
-                    e.getModel().deltaExt(e.getInput());
-                    e.getModel().setTimeOfLastDeltaExt(e.getTimePair());
+                Model model = e.getModel();
+                if(!eventPriorityQueue.isEmpty()){
+                    Event next = eventPriorityQueue.peek();
+                    if(e.isConfluent(next)){
+                        //TODO Confluent
+                        //Confluent case
+                    } else{
+                        //Not confluent, do deltaExt, try to reweight internal, if not there, add;
+                        model.deltaExt(e.getInput());
+                        model.setTimeOfLastDeltaExt(e.getTimePair());
+                        TimePair nextInternal = e.getTimePair().advanceBy(model.timeAdvance());
+                        if(!eventPriorityQueue.reweightInternal(model,nextInternal)){
+                            Event<?> newInternal = new Event<>(model,nextInternal,EventType.DELTAINT);
+                            eventPriorityQueue.add(newInternal);
+                        }
+                    }
+                }else{
+                    //Not confluent, do deltaExt, try to reweight internal, if not there, add;
+                    model.deltaExt(e.getInput());
+                    model.setTimeOfLastDeltaExt(e.getTimePair());
+                    TimePair nextInternal = e.getTimePair().advanceBy(model.timeAdvance());
+                    if(!eventPriorityQueue.reweightInternal(model,nextInternal)){
+                        Event<?> newInternal = new Event<>(model,nextInternal,EventType.DELTAINT);
+                        eventPriorityQueue.add(newInternal);
+                    }
                 }
             }else if(e.getEventType()==EventType.DELTAINT){
-                // Preform deltaInternal on model, create a new deltaExternal for
+                // Preform deltaInternal on model, create a new deltaExternal for next model, create new delta internal if needed
                 Model<?,?> model = e.getModel();
                 //If model is our output model, print its output
                 if((model.equals(this.finalChild)) || debug){
-                    System.out.println(model.lambda());
+                    System.out.println(e.getTimePair() + " " +model.name + ":" + model.lambda());
                 }
                 model.deltaInt();
                 TimePair nextExternalTime = (e.getTimePair().advanceBy(0));
@@ -62,6 +83,12 @@ public class Network<Input,Output>{
                         Event newExternal = new Event(next,nextExternalTime,EventType.DELTAEXT,model.lambda());
                         eventPriorityQueue.add(newExternal);
                     }
+                }
+                //Create new deltaInt if needed
+                if(Double.compare(model.timeAdvance(),INFINITY)!=0){
+                    TimePair nextInternal = e.getTimePair().advanceBy(model.timeAdvance());
+                    Event newInternal = new Event<>(model,nextInternal,EventType.DELTAINT);
+                    eventPriorityQueue.add(newInternal);
                 }
 
             }
