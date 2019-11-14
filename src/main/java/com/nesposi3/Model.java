@@ -4,9 +4,9 @@ import java.util.List;
 
 public abstract class Model<Input, Output> implements Comparable<Model> {
     public abstract Output lambda();
-    public abstract void deltaExt(Input input);
+    public abstract void deltaExt(Input input,double elapsed);
     public abstract void deltaInt();
-    public abstract void deltaConf(Input input);
+    public abstract void deltaConf(Input input,double elapsed);
     public abstract double timeAdvance();
     public abstract boolean recievedAllInput();
     public Port<Output> getOutputPort(){
@@ -30,15 +30,10 @@ public abstract class Model<Input, Output> implements Comparable<Model> {
     protected List<Port<Input>> inputPorts;
     protected Port<Output> outputPort;
     protected List<Pipe<Output>> pipeList;
-    protected TimePair timeOfLastDeltaExt;
-
+    public double lastEventTime;
     @Override
     public int compareTo(Model o) {
         return this.name.compareTo(o.name);
-    }
-
-    public void setTimeOfLastDeltaExt(TimePair timeOfLastDeltaExt) {
-        this.timeOfLastDeltaExt = timeOfLastDeltaExt;
     }
     public String name;
 }

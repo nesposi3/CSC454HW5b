@@ -17,19 +17,19 @@ public class Main {
         }
         try {
             Scanner sc = new Scanner(f);
-            HashMap<String,Pair<Integer,Double>> map= new HashMap<>();
+            HashMap<String,Integer> map= new HashMap<>();
             while (sc.hasNext()){
                 String line = sc.nextLine();
                 String time = line.split(",")[0];
                 String num = line.split(",")[1];
-                Pair<Integer,Double> p = new Pair<>(Integer.parseInt(num),0.0);
+                int p = Integer.parseInt(num);
                 map.put(time,p);
             }
-            Pair<Integer,Double> defPair = new Pair<Integer, Double>(-1,-1.0);
-            MachineModel press = new MachineModel(2,"press",defPair);
-            MachineModel drill = new MachineModel(1,"drill",defPair);
-            Network<Pair<Integer,Double>,Pair<Integer,Double>> network = new Network<>(debug);
-            Port<Pair<Integer,Double>> port  = new Port<>(defPair,drill);
+            int defPair = -1;
+            MachineModel press = new MachineModel(1,"press",defPair);
+            MachineModel drill = new MachineModel(2,"drill",defPair);
+            Network<Integer,Integer> network = new Network<>(debug);
+            Port<Integer> port  = new Port<>(defPair,drill);
             drill.addPort(port);
             press.addPipe(port,defPair);
             network.setFirstChild(press);

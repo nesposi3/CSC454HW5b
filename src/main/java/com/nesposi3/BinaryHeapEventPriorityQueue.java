@@ -1,12 +1,9 @@
 package com.nesposi3;
 
-import java.util.Arrays;
-import java.util.Collections;
-
-public class EventPriorityQueue {
+public class BinaryHeapEventPriorityQueue {
     private Event[] events;
     private int count = 0;
-    public EventPriorityQueue(){
+    public BinaryHeapEventPriorityQueue(){
         this.events = new Event[0];
     }
     public void add(Event e){
@@ -18,7 +15,7 @@ public class EventPriorityQueue {
             this.events = newArr;
         }
         events[k] = e;
-        Arrays.sort(events);
+        siftUp(k);
     }
     public Event take(){
         if(count==0){
@@ -29,7 +26,6 @@ public class EventPriorityQueue {
         siftDown(0);
         Event[] newEvevnts = new Event[count];
         System.arraycopy(events, 0, newEvevnts, 0, newEvevnts.length);
-        Arrays.sort(newEvevnts);
         this.events = newEvevnts;
         return out;
     }
@@ -97,9 +93,9 @@ public class EventPriorityQueue {
     public boolean reweightInternal(Model model,TimePair newTime) {
         for (int i =0;i<events.length ;i++) {
             Event e = events[i];
-            if(e.getEventType()==EventType.DELTAINT && e.getModel().equals(model)){
+            if(e.getEventType()==EventType.DELTAINT && e.getModel().equals(model) && (e.getTimePair().compareTo(newTime) >= 0)){
                 e.setTimePair(newTime);
-                Arrays.sort(events);
+                siftDown(i);
                 return true;
             }
         }

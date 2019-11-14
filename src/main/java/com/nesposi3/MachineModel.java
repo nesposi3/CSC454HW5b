@@ -4,18 +4,17 @@ package com.nesposi3;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class MachineModel extends Model<Pair<Integer,Double>,Pair<Integer,Double>> {
+public class MachineModel extends Model<Integer,Integer> {
     private double timeLeft;
     private int numParts;
-    private int t;
-    private Pair<Integer,Double> defaultPortVal;
+    private final int t;
+    private Integer defaultPortVal;
     @Override
-    public Pair<Integer,Double> lambda() {
-        //TODO Get the correct time elapsed for output
-        return new Pair<>(1,0.0);
+    public Integer lambda() {
+        return 1;
     }
 
-    public MachineModel(int timeTocomplete, String name,Pair<Integer,Double> defaultPortVal){
+    public MachineModel(int timeTocomplete, String name,Integer defaultPortVal){
         this.t = timeTocomplete;
         this.name = name;
         this.defaultPortVal = defaultPortVal;
@@ -23,18 +22,19 @@ public class MachineModel extends Model<Pair<Integer,Double>,Pair<Integer,Double
         this.pipeList = new ArrayList<>();
     }
     @Override
-    public void deltaExt(Pair<Integer,Double> pair) {
-        int q = pair.getA();
-        double e = pair.getB();
-        if(numParts>0){
+    public void deltaExt(Integer q,double elapsed) {
+        //System.out.println(e);
+        //System.out.println(this.name + " " + timeElapsed);
+        if(this.numParts>0){
             this.numParts += q;
-            this.timeLeft -= e;
+            this.timeLeft -= elapsed;
         }else{
             this.numParts += q;
             this.timeLeft = t;
         }
+        //System.out.println("Time left in machine " + timeLeft);
         // Clear ports for next external
-        for (Port<Pair<Integer,Double>> p: inputPorts) {
+        for (Port<Integer> p: inputPorts) {
             p.setVal(defaultPortVal);
         }
     }
@@ -45,8 +45,8 @@ public class MachineModel extends Model<Pair<Integer,Double>,Pair<Integer,Double
     }
 
     @Override
-    public void deltaConf(Pair<Integer,Double> pair) {
-        this.numParts += (pair.getA()-1);
+    public void deltaConf(Integer numParts,double elapsed) {
+        this.numParts += (numParts-1);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class MachineModel extends Model<Pair<Integer,Double>,Pair<Integer,Double
     @Override
     public boolean recievedAllInput() {
         boolean ready = true;
-        for (Port<Pair<Integer,Double>> p: inputPorts) {
+        for (Port<Integer> p: inputPorts) {
             if(p.getVal().equals(defaultPortVal)){
                 ready = false;
             }
