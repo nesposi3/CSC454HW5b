@@ -97,7 +97,7 @@ public class EventPriorityQueue {
     public boolean reweightInternal(Model model,TimePair newTime) {
         for (int i =0;i<events.length ;i++) {
             Event e = events[i];
-            if(e.getEventType()==EventType.DELTAINT && e.getModel().equals(model)){
+            if(e.getEventType()==EventType.DELTAINT && e.getModel().equals(model) && (e.getTimePair().compareTo(newTime) >=0)){
                 e.setTimePair(newTime);
                 Arrays.sort(events);
                 return true;

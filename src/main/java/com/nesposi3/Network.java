@@ -35,7 +35,7 @@ public class Network<Input, Output> {
 
     public void simulate() {
         while (!eventPriorityQueue.isEmpty()) {
-            System.out.println(eventPriorityQueue);
+            //System.out.println(eventPriorityQueue);
             Event<?> e = eventPriorityQueue.take();
             if (debug) {
                 System.out.println(e);
@@ -60,7 +60,6 @@ public class Network<Input, Output> {
                         //Not confluent, do deltaExt, try to reweight internal, if not there, add;
                         model.deltaExt(e.getInput(),elapsed);
                         TimePair nextInternal = e.getTimePair().advanceBy(model.timeAdvance());
-                        //System.out.println(model.timeAdvance());
                         if (!eventPriorityQueue.reweightInternal(model, nextInternal)) {
                             Event<?> newInternal = new Event<>(model, nextInternal, EventType.DELTAINT);
                             eventPriorityQueue.add(newInternal);
@@ -97,7 +96,6 @@ public class Network<Input, Output> {
                 //Create new deltaInt if needed
                 if (Double.compare(model.timeAdvance(), INFINITY) != 0) {
                     TimePair nextInternal = e.getTimePair().advanceBy(model.timeAdvance());
-                    System.out.println("new internal generated for " + model.name + " at " + nextInternal);
                     if (!eventPriorityQueue.reweightInternal(model, nextInternal)) {
                         Event<?> newInternal = new Event<>(model, nextInternal, EventType.DELTAINT);
                         eventPriorityQueue.add(newInternal);

@@ -23,8 +23,6 @@ public class MachineModel extends Model<Integer,Integer> {
     }
     @Override
     public void deltaExt(Integer q,double elapsed) {
-        //System.out.println(e);
-        //System.out.println(this.name + " " + timeElapsed);
         if(this.numParts>0){
             this.numParts += q;
             this.timeLeft -= elapsed;
@@ -32,7 +30,6 @@ public class MachineModel extends Model<Integer,Integer> {
             this.numParts += q;
             this.timeLeft = t;
         }
-        //System.out.println("Time left in machine " + timeLeft);
         // Clear ports for next external
         for (Port<Integer> p: inputPorts) {
             p.setVal(defaultPortVal);
@@ -42,11 +39,13 @@ public class MachineModel extends Model<Integer,Integer> {
     @Override
     public void deltaInt() {
         this.numParts--;
+        this.timeLeft = t;
     }
 
     @Override
     public void deltaConf(Integer numParts,double elapsed) {
         this.numParts += (numParts-1);
+        this.timeLeft = t;
     }
 
     @Override
