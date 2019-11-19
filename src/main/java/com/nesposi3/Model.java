@@ -36,4 +36,5 @@ public abstract class Model<Input, Output> implements Comparable<Model> {
         return this.name.compareTo(o.name);
     }
     public String name;
+
 }

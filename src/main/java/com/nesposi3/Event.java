@@ -1,5 +1,7 @@
 package com.nesposi3;
 
+import java.util.Objects;
+
 public class Event<Input> implements Comparable<Event> {
     private Model model;
 
@@ -62,5 +64,21 @@ public class Event<Input> implements Comparable<Event> {
 
     public void setTimePair(TimePair timePair) {
         this.timePair = timePair;
+    }
+
+    public void setEventType(EventType type) {
+        this.eventType = type;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Event)) return  false;
+        Event other = (Event) obj;
+        return (other.getTimePair().equals(this.getTimePair())) && (other.getEventType().equals(this.eventType)) && (this.getModel().equals(other.getModel()));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(input,eventType,model);
     }
 }

@@ -18,7 +18,7 @@ public class EventPriorityQueue {
             this.events = newArr;
         }
         events[k] = e;
-        Arrays.sort(events);
+        siftUp(k);
     }
     public Event take(){
         if(count==0){
@@ -27,10 +27,9 @@ public class EventPriorityQueue {
         Event out = events[0];
         events[0] = events[--count];
         siftDown(0);
-        Event[] newEvevnts = new Event[count];
-        System.arraycopy(events, 0, newEvevnts, 0, newEvevnts.length);
-        Arrays.sort(newEvevnts);
-        this.events = newEvevnts;
+        Event[] newEvents = new Event[count];
+        System.arraycopy(events, 0, newEvents, 0, newEvents.length);
+        this.events = newEvents;
         return out;
     }
     private void siftDown(int k){
@@ -81,7 +80,7 @@ public class EventPriorityQueue {
     }
 
     public boolean isEmpty() {
-        return events.length==0;
+        return count==0;
     }
 
     public Event peek() {
@@ -95,12 +94,31 @@ public class EventPriorityQueue {
      * @return Returns false if no such internal event exists, Returns true if it does exist and was reweighted
      */
     public boolean reweightInternal(Model model,TimePair newTime) {
-        for (int i =0;i<events.length ;i++) {
+        for (int i = 0; i < events.length; i++) {
             Event e = events[i];
-            if(e.getEventType()==EventType.DELTAINT && e.getModel().equals(model) && (e.getTimePair().compareTo(newTime) >=0)){
+            if (e.getEventType() == EventType.DELTAINT && e.getModel().equals(model)) {
                 e.setTimePair(newTime);
-                Arrays.sort(events);
+                if (e.getTimePair().compareTo(newTime) >= 0) {
+                    siftDown(i);
+                } else {
+                    siftUp(i);
+                }
                 return true;
+            }
+        }
+        return false;
+    }
+    public boolean deleteInternal(Model model){
+        if(count == 0){
+            return false;
+        }else{
+            for (int i = 0; i <events.length ; i++) {
+                Event e = events[i];
+                if(e.getEventType().equals(EventType.DELTAINT) && e.getModel().equals(model)){
+                    events[i] = events[--count];
+                    siftDown(i);
+                    return true;
+                }
             }
         }
         return false;
