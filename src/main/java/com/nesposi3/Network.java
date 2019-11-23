@@ -12,12 +12,16 @@ public class Network<Input, Output> {
     private Model<?, Output> finalChild;
     private List<Model<?, ?>> childList;
     private boolean debug;
+    private List<NetworkInputPipe<Input>> inputPipes;
+    private List<Pipe<Output>> outputPipes;
 
     public Network(boolean debugFlag) {
         this.childList = new ArrayList<>();
         this.debug = debugFlag;
         this.globalTime = new TimePair(0.0);
         this.eventPriorityQueue = new EventPriorityQueue();
+        this.inputPipes = new ArrayList<>();
+        this.outputPipes = new ArrayList<>();
     }
 
     public void addModel(Model<?, ?> m) {
@@ -28,14 +32,17 @@ public class Network<Input, Output> {
         for (String s : inputs.keySet()) {
             double time = Double.parseDouble(s);
             Input num = inputs.get(s);
-            Event<Input> e = new Event<>(this.firstChild, new TimePair(time), EventType.DELTAEXT, num);
-            eventPriorityQueue.add(e);
+            for (NetworkInputPipe n: inputPipes
+                 ) {
+                Event<Input> e = new Event<>(n.getModel(), new TimePair(time), EventType.DELTAEXT, num);
+                eventPriorityQueue.add(e);
+            }
+
         }
     }
 
     public void simulate() {
         while (!eventPriorityQueue.isEmpty()) {
-            //System.out.println(eventPriorityQueue);
             Event<?> e = eventPriorityQueue.take();
             if (debug) {
                 System.out.println(e);
@@ -130,7 +137,10 @@ public class Network<Input, Output> {
             }
             e.getModel().lastEventTime = globalTime.getReal();
         }
-
+    }
+    public void addInputPipe(Port<Input> port) {
+        NetworkInputPipe<Input> pipe = new NetworkInputPipe<>(port);
+        this.inputPipes.add(pipe);
     }
 
     /**
@@ -150,5 +160,9 @@ public class Network<Input, Output> {
     public void setFinalChild(Model<?, Output> m) {
         this.finalChild = m;
     }
+    public void printOutput(){
+        for (Pipe<Output> p :outputPipes) {
 
+        }
+    }
 }

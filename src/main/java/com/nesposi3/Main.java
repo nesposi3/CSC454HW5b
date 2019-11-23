@@ -30,8 +30,12 @@ public class Main {
             MachineModel drill = new MachineModel(2,"drill",defPair);
             Network<Integer,Integer> network = new Network<>(debug);
             Port<Integer> port  = new Port<>(defPair,drill);
+            Port<Integer> pressPort = new Port<>(defPair,press);
+            press.addPort(pressPort);
+            network.addInputPipe(pressPort);
             drill.addPort(port);
             press.addPipe(port,defPair);
+            Port<Integer> networkOutputPort;
             network.setFirstChild(press);
             network.setFinalChild(drill);
             network.initializeQueue(map);
