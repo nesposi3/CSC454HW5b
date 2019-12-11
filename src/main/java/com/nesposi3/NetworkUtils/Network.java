@@ -82,7 +82,7 @@ public class Network<Input, Output> {
                 // Preform deltaInternal on model, create a new deltaExternal for next model, create new delta internal if needed
                 Model<?, ?> model = e.getModel();
                 //If model is our output model, print its output
-                if ((model.equals(this.finalChild)) || debug) {
+                if (model.isNetworkOutput() || debug) {
                     System.out.println(e.getTimePair() + " " + model.name + ":" + model.lambda());
                 }
                 TimePair nextExternalTime = (e.getTimePair().advanceBy(0));
@@ -108,7 +108,7 @@ public class Network<Input, Output> {
 
             } else if (e.getEventType() == EventType.DELTACONF) {
                 Model model = e.getModel();
-                if (model.equals(this.finalChild) || debug) {
+                if (model.isNetworkOutput() || debug) {
                     System.out.println(e.getTimePair() + " " + model.name + ":" + model.lambda());
                 }
                 model.deltaConf(e.getInput(), elapsed);

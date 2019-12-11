@@ -68,7 +68,7 @@ public class Main {
             xor.addPipe(binOutPort,"");
             add.addPipe(binOutPort,"");
 
-            network.setFinalChild(binOut);
+            binOut.setNetworkOutput(true);
             network.initializeQueue(map);
             network.simulate();
         }catch (FileNotFoundException fnf){

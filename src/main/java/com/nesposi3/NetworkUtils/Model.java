@@ -3,6 +3,8 @@ package com.nesposi3.NetworkUtils;
 import java.util.List;
 
 public abstract class Model<Input, Output> implements Comparable<Model> {
+    private boolean networkOutput = false;
+
     public abstract Output lambda();
     public abstract void deltaExt(Input input,double elapsed);
     public abstract void deltaInt();
@@ -26,6 +28,9 @@ public abstract class Model<Input, Output> implements Comparable<Model> {
         Pipe<Output> p = new Pipe<>(this.outputPort,nextIn);
         this.pipeList.add(p);
     }
+    public void setNetworkOutput(boolean b){
+        this.networkOutput = b;
+    }
     protected boolean debug;
     protected List<Port<Input>> inputPorts;
     protected Port<Output> outputPort;
@@ -37,4 +42,7 @@ public abstract class Model<Input, Output> implements Comparable<Model> {
     }
     public String name;
 
+    public boolean isNetworkOutput() {
+        return this.networkOutput;
+    }
 }
