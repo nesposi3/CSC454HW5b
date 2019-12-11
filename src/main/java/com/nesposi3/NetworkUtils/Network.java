@@ -147,9 +147,4 @@ public class Network<Input, Output> {
     public void setFinalChild(Model<?, Output> m) {
         this.finalChild = m;
     }
-    public void printOutput(){
-        for (Pipe<Output> p :outputPipes) {
-
-        }
-    }
 }
