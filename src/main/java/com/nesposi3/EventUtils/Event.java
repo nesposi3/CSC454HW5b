@@ -50,7 +50,7 @@ public class Event<Input> implements Comparable<Event> {
 
     @Override
     public String toString() {
-        return "{ "+model.name + " " +eventType + " " + timePair.toString() + " }";
+        return "{ "+model.name + " " +eventType + " " + timePair.toString() +" " + input + " }";
     }
 
     public Input getInput() {

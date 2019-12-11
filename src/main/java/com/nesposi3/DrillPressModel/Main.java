@@ -38,7 +38,6 @@ public class Main {
             drill.addPort(port);
             press.addPipe(port,defPair);
             Port<Integer> networkOutputPort;
-            network.setFirstChild(press);
             network.setFinalChild(drill);
             network.initializeQueue(map);
             network.simulate();

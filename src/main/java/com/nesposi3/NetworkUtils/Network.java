@@ -12,24 +12,17 @@ public class Network<Input, Output> {
     public static final Double INFINITY = Double.MAX_VALUE;
     public TimePair globalTime;
     public EventPriorityQueue eventPriorityQueue;
-    private Model<Input, ?> firstChild;
     private Model<?, Output> finalChild;
-    private List<Model<?, ?>> childList;
     private boolean debug;
     private List<NetworkInputPipe<Input>> inputPipes;
     private List<Pipe<Output>> outputPipes;
 
     public Network(boolean debugFlag) {
-        this.childList = new ArrayList<>();
         this.debug = debugFlag;
         this.globalTime = new TimePair(0.0);
         this.eventPriorityQueue = new EventPriorityQueue();
         this.inputPipes = new ArrayList<>();
         this.outputPipes = new ArrayList<>();
-    }
-
-    public void addModel(Model<?, ?> m) {
-        this.childList.add(m);
     }
 
     public void initializeQueue(Map<String, Input> inputs) {
@@ -41,7 +34,6 @@ public class Network<Input, Output> {
                 Event<Input> e = new Event<>(n.getModel(), new TimePair(time), EventType.DELTAEXT, num);
                 eventPriorityQueue.add(e);
             }
-
         }
     }
 
@@ -69,18 +61,22 @@ public class Network<Input, Output> {
                     } else {
                         //Not confluent, do deltaExt, try to reweight internal, if not there, add;
                         model.deltaExt(e.getInput(), elapsed);
+                        if(Double.compare(model.timeAdvance(),INFINITY)!=0){
+                            TimePair nextInternal = e.getTimePair().advanceBy(model.timeAdvance());
+                            eventPriorityQueue.deleteInternal(model);
+                            Event<?> newInternal = new Event<>(model, nextInternal, EventType.DELTAINT);
+                            eventPriorityQueue.add(newInternal);
+                        }
+                    }
+                } else {
+                    //Not confluent, do deltaExt, try to reweight internal, if not there, add;
+                    model.deltaExt(e.getInput(), elapsed);
+                    if(Double.compare(model.timeAdvance(),INFINITY)!=0){
                         TimePair nextInternal = e.getTimePair().advanceBy(model.timeAdvance());
                         eventPriorityQueue.deleteInternal(model);
                         Event<?> newInternal = new Event<>(model, nextInternal, EventType.DELTAINT);
                         eventPriorityQueue.add(newInternal);
                     }
-                } else {
-                    //Not confluent, do deltaExt, try to reweight internal, if not there, add;
-                    model.deltaExt(e.getInput(), elapsed);
-                    TimePair nextInternal = e.getTimePair().advanceBy(model.timeAdvance());
-                    eventPriorityQueue.deleteInternal(model);
-                    Event<?> newInternal = new Event<>(model, nextInternal, EventType.DELTAINT);
-                    eventPriorityQueue.add(newInternal);
                 }
             } else if (e.getEventType() == EventType.DELTAINT) {
                 // Preform deltaInternal on model, create a new deltaExternal for next model, create new delta internal if needed
@@ -89,7 +85,6 @@ public class Network<Input, Output> {
                 if ((model.equals(this.finalChild)) || debug) {
                     System.out.println(e.getTimePair() + " " + model.name + ":" + model.lambda());
                 }
-                model.deltaInt();
                 TimePair nextExternalTime = (e.getTimePair().advanceBy(0));
                 // Go through all the pipes of a model, and check to see if deltaExternal events need to be made
                 for (Pipe pipe : model.getPipes()) {
@@ -101,6 +96,7 @@ public class Network<Input, Output> {
                         eventPriorityQueue.add(newExternal);
                     }
                 }
+                model.deltaInt();
                 //Create new deltaInt if needed
                 if (Double.compare(model.timeAdvance(), INFINITY) != 0) {
                     TimePair nextInternal = e.getTimePair().advanceBy(model.timeAdvance());
@@ -141,15 +137,6 @@ public class Network<Input, Output> {
     public void addInputPipe(Port<Input> port) {
         NetworkInputPipe<Input> pipe = new NetworkInputPipe<>(port);
         this.inputPipes.add(pipe);
-    }
-
-    /**
-     * Tell the network which child to give its input to
-     *
-     * @param m
-     */
-    public void setFirstChild(Model<Input, ?> m) {
-        this.firstChild = m;
     }
 
     /**
