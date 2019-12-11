@@ -1,4 +1,4 @@
-package com.nesposi3;
+package com.nesposi3.NetworkUtils;
 
 public class Pipe<T>{
     private Port<T> previousOut;

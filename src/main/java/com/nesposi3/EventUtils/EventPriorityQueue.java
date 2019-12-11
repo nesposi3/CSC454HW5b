@@ -1,7 +1,7 @@
-package com.nesposi3;
+package com.nesposi3.EventUtils;
 
-import java.util.Arrays;
-import java.util.Collections;
+import com.nesposi3.NetworkUtils.Model;
+import com.nesposi3.NetworkUtils.TimePair;
 
 public class EventPriorityQueue {
     private Event[] events;
@@ -110,7 +110,7 @@ public class EventPriorityQueue {
      * @param newTime the new time of the internal event
      * @return Returns false if no such internal event exists, Returns true if it does exist and was reweighted
      */
-    public boolean reweightInternal(Model model,TimePair newTime) {
+    public boolean reweightInternal(Model model, TimePair newTime) {
         for (int i = 0; i < events.length; i++) {
             Event e = events[i];
             if(e.getEventType()==EventType.DELTAINT && e.getModel().equals(model) ){

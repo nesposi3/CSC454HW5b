@@ -28,7 +28,7 @@
                     <descriptorRefs>jar-with-dependencies</descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.nesposi3.Main</mainClass>
+                            <mainClass>com.nesposi3.DrillPressModel.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

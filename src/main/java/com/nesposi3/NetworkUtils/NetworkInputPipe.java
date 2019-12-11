@@ -1,4 +1,4 @@
-package com.nesposi3;
+package com.nesposi3.NetworkUtils;
 
 public class NetworkInputPipe <T> {
     private Port<T> input;

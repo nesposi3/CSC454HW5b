@@ -1,4 +1,7 @@
-package com.nesposi3;
+package com.nesposi3.EventUtils;
+
+import com.nesposi3.NetworkUtils.Model;
+import com.nesposi3.NetworkUtils.TimePair;
 
 import java.util.Objects;
 

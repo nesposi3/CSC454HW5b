@@ -1,4 +1,8 @@
-package com.nesposi3;
+package com.nesposi3.NetworkUtils;
+
+import com.nesposi3.EventUtils.Event;
+import com.nesposi3.EventUtils.EventPriorityQueue;
+import com.nesposi3.EventUtils.EventType;
 
 import java.util.ArrayList;
 import java.util.List;
