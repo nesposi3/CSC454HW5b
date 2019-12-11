@@ -43,7 +43,6 @@ public class Network<Input, Output> {
 
     public void simulate() {
         while (!eventPriorityQueue.isEmpty()) {
-            System.out.println(eventPriorityQueue);
             Event<?> e = eventPriorityQueue.take();
             if (debug) {
                 System.out.println(e);

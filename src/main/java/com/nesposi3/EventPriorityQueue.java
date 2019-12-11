@@ -36,14 +36,30 @@ public class EventPriorityQueue {
         while(k<count){
             int l = left(k);
             int r = right(k);
-            int c;
-            if(r>=count || events[l].compareTo(events[r])<0){
-                c=l;
-            }else c =r;
-            if(c>=count) break;
-            if(events[k].compareTo(events[c])<0){
-                k = c;
-            }else break;
+            if(l>=count){
+                break;
+            }
+            if(r>=count){
+                if(events[l].compareTo(events[k])<1){
+                    Event tmp = events[l];
+                    events[l] = events[k];
+                    events[k] = tmp;
+                }
+                //Break because we are at the leaf level
+                break;
+            }
+            int least = l;
+            if(events[l].compareTo(events[r])>0){
+                least = r;
+            }
+            if(events[least].compareTo(events[k])<1){
+                Event tmp = events[k];
+                events[k] = events[least];
+                events[least] = tmp;
+                k = least;
+            }else{
+                break;
+            }
         }
     }
     private void siftUp(int k){
@@ -53,6 +69,7 @@ public class EventPriorityQueue {
                 Event e = events[k];
                 events[k] = events[p];
                 events[p] = e;
+                k = p;
             }else break;
         }
     }
