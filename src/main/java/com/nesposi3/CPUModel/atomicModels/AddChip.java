@@ -7,14 +7,14 @@ import com.nesposi3.NetworkUtils.Network;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
-public class Add extends Model<String,String> {
+public class AddChip extends Model<String,String> {
     private ArrayDeque<String> output;
     private final double t = 1.0;
-    public Add(){
+    public AddChip(){
         output = new ArrayDeque<>();
         this.pipeList = new ArrayList<>();
         this.inputPorts = new ArrayList<>();
-        this.name = "Add";
+        this.name = "AddChip";
     }
     @Override
     public String lambda() {

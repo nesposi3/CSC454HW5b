@@ -7,13 +7,14 @@ import com.nesposi3.NetworkUtils.Network;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
-public class Modulo extends Model<String,String> {
+public class AndChip extends Model<String,String> {
     private ArrayDeque<String> output;
-    public Modulo(){
+    private final double t = 5.0;
+    public AndChip(){
         output = new ArrayDeque<>();
         this.pipeList = new ArrayList<>();
         this.inputPorts = new ArrayList<>();
-        this.name = "Modulo";
+        this.name = "AndChip";
     }
     @Override
     public String lambda() {
@@ -22,9 +23,9 @@ public class Modulo extends Model<String,String> {
 
     @Override
     public void deltaExt(String s, double elapsed) {
-        if(Utils.correctModel(Utils.BitTypes.MOD,s)){
+        if(Utils.correctModel(Utils.BitTypes.AND,s)){
             int[] ints = Utils.intsFromBits(s);
-            int c = ints[0] % ints[1];
+            int c = ints[0] & ints[1];
             String out = Utils.integerToBinary(c);
             output.add(out);
         }
@@ -38,9 +39,9 @@ public class Modulo extends Model<String,String> {
     @Override
     public void deltaConf(String s, double elapsed) {
         output.poll();
-        if(Utils.correctModel(Utils.BitTypes.MOD,s)){
+        if(Utils.correctModel(Utils.BitTypes.AND,s)){
             int[] ints = Utils.intsFromBits(s);
-            int c = ints[0] % ints[1];
+            int c = ints[0] & ints[1];
             String out = Utils.integerToBinary(c);
             output.add(out);
         }
@@ -49,7 +50,7 @@ public class Modulo extends Model<String,String> {
     @Override
     public double timeAdvance() {
         if(output.size()>0){
-            return 20.0;
+            return t;
         }else{
             return Network.INFINITY;
         }

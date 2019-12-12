@@ -7,13 +7,13 @@ import com.nesposi3.NetworkUtils.Network;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
-public class Xor extends Model<String,String> {
+public class XorChip extends Model<String,String> {
     private ArrayDeque<String> output;
-    public Xor(){
+    public XorChip(){
         output = new ArrayDeque<>();
         this.pipeList = new ArrayList<>();
         this.inputPorts = new ArrayList<>();
-        this.name = "Multiply";
+        this.name = "MultiplyChip";
     }
     @Override
     public String lambda() {

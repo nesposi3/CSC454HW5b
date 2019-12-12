@@ -7,13 +7,13 @@ import com.nesposi3.NetworkUtils.Network;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
-public class Multiply extends Model<String,String> {
+public class OrChip extends Model<String,String> {
     private ArrayDeque<String> output;
-    public Multiply(){
+    public OrChip(){
         output = new ArrayDeque<>();
         this.pipeList = new ArrayList<>();
         this.inputPorts = new ArrayList<>();
-        this.name = "Multiply";
+        this.name = "OrChip";
     }
     @Override
     public String lambda() {
@@ -22,9 +22,9 @@ public class Multiply extends Model<String,String> {
 
     @Override
     public void deltaExt(String s, double elapsed) {
-        if(Utils.correctModel(Utils.BitTypes.MUL,s)){
+        if(Utils.correctModel(Utils.BitTypes.OR,s)){
             int[] ints = Utils.intsFromBits(s);
-            int c = ints[0] * ints[1];
+            int c = ints[0] | ints[1];
             String out = Utils.integerToBinary(c);
             output.add(out);
         }
@@ -38,9 +38,9 @@ public class Multiply extends Model<String,String> {
     @Override
     public void deltaConf(String s, double elapsed) {
         output.poll();
-        if(Utils.correctModel(Utils.BitTypes.MUL,s)){
+        if(Utils.correctModel(Utils.BitTypes.OR,s)){
             int[] ints = Utils.intsFromBits(s);
-            int c = ints[0] * ints[1];
+            int c = ints[0] | ints[1];
             String out = Utils.integerToBinary(c);
             output.add(out);
         }
@@ -49,7 +49,7 @@ public class Multiply extends Model<String,String> {
     @Override
     public double timeAdvance() {
         if(output.size()>0){
-            return 8.0;
+            return 3.0;
         }else{
             return Network.INFINITY;
         }

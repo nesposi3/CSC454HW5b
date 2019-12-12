@@ -1,7 +1,6 @@
 package com.nesposi3.CPUModel;
 
 import com.nesposi3.CPUModel.atomicModels.*;
-import com.nesposi3.NetworkUtils.Model;
 import com.nesposi3.NetworkUtils.Network;
 import com.nesposi3.NetworkUtils.Port;
 
@@ -33,26 +32,26 @@ public class Main {
             Port<String> binInPort = new Port<>("",binIn);
             network.addInputPipe(binInPort);
 
-            And and = new And();
-            Port<String> andPort = new Port<>("",and);
+            AndChip andChip = new AndChip();
+            Port<String> andPort = new Port<>("", andChip);
 
-            Modulo modulo = new Modulo();
-            Port<String> modPort = new Port<>("",modulo);
+            ModuloChip moduloChip = new ModuloChip();
+            Port<String> modPort = new Port<>("", moduloChip);
 
-            Or or = new Or();
-            Port<String> orPort = new Port<>("",or);
+            OrChip orChip = new OrChip();
+            Port<String> orPort = new Port<>("", orChip);
 
-            Multiply multiply = new Multiply();
-            Port<String> multPort = new Port<>("",multiply);
+            MultiplyChip multiplyChip = new MultiplyChip();
+            Port<String> multPort = new Port<>("", multiplyChip);
 
-            Xor xor = new Xor();
-            Port<String> xorPort = new Port<>("",xor);
+            XorChip xorChip = new XorChip();
+            Port<String> xorPort = new Port<>("", xorChip);
 
             BinaryConverter binOut = new BinaryConverter(false);
             Port<String> binOutPort = new Port<>("",binOut);
 
-            Add add = new Add();
-            Port<String> addPort = new Port<>("",add);
+            AddChip addChip = new AddChip();
+            Port<String> addPort = new Port<>("", addChip);
 
             binIn.addPipe(andPort,"");
             binIn.addPipe(modPort,"");
@@ -61,12 +60,12 @@ public class Main {
             binIn.addPipe(xorPort,"");
             binIn.addPipe(addPort,"");
 
-            and.addPipe(binOutPort,"");
-            modulo.addPipe(binOutPort,"");
-            multiply.addPipe(binOutPort,"");
-            or.addPipe(binOutPort,"");
-            xor.addPipe(binOutPort,"");
-            add.addPipe(binOutPort,"");
+            andChip.addPipe(binOutPort,"");
+            moduloChip.addPipe(binOutPort,"");
+            multiplyChip.addPipe(binOutPort,"");
+            orChip.addPipe(binOutPort,"");
+            xorChip.addPipe(binOutPort,"");
+            addChip.addPipe(binOutPort,"");
 
             binOut.setNetworkOutput(true);
             network.initializeQueue(map);
